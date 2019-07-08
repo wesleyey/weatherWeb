@@ -7,7 +7,10 @@ const API_KEY = "87eff3f6fb18a39f2983b73541f96269";
 export default class App extends Component {
   state = {
     isLoaded: false,
-    error: null
+    error: null,
+    temperture: null,
+    name: null,
+    description: null
   };
 
   componentDidMount() {
@@ -29,16 +32,26 @@ export default class App extends Component {
     )
       .then(response => response.json())
       .then(json => {
-        console.log(json);
+        //console.log(json);
+        this.setState({
+          temperture: json.main.temp,
+          name: json.weather[0].main,
+          description: json.weather[0].description,
+          isLoaded: true
+        });
       });
   };
 
   render() {
-    const { isLoaded, error } = this.state;
+    const { isLoaded, error, temperture, name, description } = this.state;
     return (
       <View style={styles.container}>
         {isLoaded ? (
-          <Weather />
+          <Weather
+            temp={Math.floor(temperture - 273.15)}
+            name={name}
+            description={description}
+          />
         ) : error === true ? (
           <View style={styles.loading}>
             <Text style={styles.errorMessage}>Something went wrong...</Text>
